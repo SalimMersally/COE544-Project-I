@@ -1,6 +1,15 @@
-from sklearn import tree
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn import svm
+from sklearn.svm import SVC
+from sklearn.model_selection import train_test_split
+from joblib import dump, load
+
+
+def splitDataSet(X, Y):
+    X_train, X_test, Y_train, Y_test = train_test_split(
+        X, Y, test_size=0.1, shuffle=True
+    )
+    return (X_train, X_test, Y_train, Y_test)
 
 
 def getKNN(X, Y):
@@ -10,12 +19,20 @@ def getKNN(X, Y):
 
 
 def getDecisionTree(X, Y):
-    decisionTree = tree.DecisionTreeClassifier()
+    decisionTree = DecisionTreeClassifier()
     decisionTree.fit(X, Y)
     return decisionTree
 
 
 def getSVM(X, Y):
-    svmModel = svm.SVC()
+    svmModel = SVC()
     svmModel.fit(X, Y)
     return svmModel
+
+
+def saveClassifier(classifier, fileName):
+    dump(classifier, fileName)
+
+
+def retrieveClassifier(fileName):
+    return load(fileName)
