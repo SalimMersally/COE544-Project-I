@@ -68,3 +68,12 @@ def find_bounding_box(img):
     #add character image and dimension from original image into the characters array
     characters.append((padded,(x,y,w,h)))
   return characters,padded
+
+
+#the method bellow creates a visual representation of the bounding box on original images
+def draw_bounding_boxes(img, characters):
+    boxes = [b[1] for b in characters]
+    for (x,y,w,h) in boxes:
+        cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 2)
+    cv2.imshow(img)
+    cv2.waitKey(0)
