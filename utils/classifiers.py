@@ -19,7 +19,7 @@ def getKNN(X, Y):
 
 
 def getDecisionTree(X, Y):
-    decisionTree = DecisionTreeClassifier()
+    decisionTree = DecisionTreeClassifier(max_depth=10)
     decisionTree.fit(X, Y)
     return decisionTree
 
