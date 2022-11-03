@@ -57,7 +57,15 @@ def get_proj_histogram(img):
   plt.imshow(img_concate)
   plt.show()
   
-  return img_concate
+  
+  to_one_dimension=[]
+  for i in range(32):
+    su = 0;
+    for j in range(32):
+        su += img_concate[j][i]
+    to_one_dimension.append(su, end = " ")    
+  
+  return to_one_dimension
 
 def calc_perc_whitepx_quadrants(img):
     perc_white_upper_left = np.sum(sum (img[x][y] ==255 for x in range(0,16) for y in range(0,16)))/256.0*100
