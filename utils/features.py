@@ -41,29 +41,13 @@ def number_of_inner_closed_loops(img):
 
 
 def get_proj_histogram(img):
-    width = 32
-    height = 32
-
-    # Sum the value lines
-    vertical_px = np.sum(img, axis=0)
-    # Normalize
-    normalize = vertical_px / 255
-    # create a black image with zeros
-    blankImage = np.zeros_like(img)
-    # Make the vertical projection histogram
-    for idx, value in enumerate(normalize):
-        cv2.line(blankImage, (idx, 0), (idx, height - int(value)), (255, 255, 255), 1)
-    # Concatenate the image
-    img_concate = cv2.vconcat([cv2.cvtColor(blankImage, cv2.COLOR_BGR2RGB)])
-    plt.imshow(img_concate)
-    plt.show()
-
+    img = img/255  
     to_one_dimension = []
     for i in range(32):
         su = 0
         for j in range(32):
-            su += img_concate[j][i]
-        to_one_dimension.append(su, end=" ")
+            su += img[j][i]
+        to_one_dimension.append(su)
 
     return to_one_dimension
 
