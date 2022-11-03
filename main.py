@@ -1,33 +1,18 @@
-from configparser import MAX_INTERPOLATION_DEPTH
 from utils.classifiers import *
-import os
-import csv
-import cv2
 from utils.preprocess import *
 from utils.features import *
 from utils.featureChoice import *
 from pprint import pprint
+from sklearn.metrics import accuracy_score
+
 
 X, Y = get_dataSet_or_process_images()
 
-# X, Y = process_images()
-# for row in fileCSV:
-#     # if row[1] == "9":
-#     #     break
-#     if row[1] == "label":
-#         continue
-#     print(row[0])
-#     print(row[1])
-#     Y.append(row[1])
-#     imagePath = os.path.join(os.getcwd(), "dataSet", row[0].replace("/", "\\"))
-#     img = cv2.imread(imagePath)
-#     chracters, processedImg = find_bounding_box(img)
-#     print(processedImg)
-#     print(cv2.imwrite("CroppedImages/" + row[0], processedImg))
-#     feature1 = average_distance_from_center(processedImg)
-#     feature2 = number_of_inner_closed_loops(processedImg)
-#     feature3, feature4, feature5, feature6 = calc_perc_whitepx_quadrants(processedImg)
-#     features = get_proj_histogram(processedImg)
+# for image in X:
+#     feature1 = average_distance_from_center(image)
+#     feature2 = number_of_inner_closed_loops(image)
+#     feature3, feature4, feature5, feature6 = calc_perc_whitepx_quadrants(image)
+#     features = get_proj_histogram(image)
 #     features.append(feature1)
 #     features.append(feature2)
 #     features.append(feature3)
@@ -36,34 +21,47 @@ X, Y = get_dataSet_or_process_images()
 #     features.append(feature6)
 #     print(features)
 
-#     X.append(features)
 
-# print("reading done")
-
-# print(cor_selector(X, Y, len(X)))
+for i in range(len(X)):
+    print(i)
+    X[i] = np.reshape(X[i], (1024))
 
 (X_train, X_test, Y_train, Y_test) = splitDataSet(X, Y)
-# print("split done")
-# from sklearn.metrics import accuracy_score
-# from sklearn.metrics import (
-#     precision_score,
-#     recall_score,
-#     f1_score,
-# )
 
-# knn = getKNN(X_train, Y_train)
-# print("knn done")
-# decisionTree = getDecisionTree(X_train, Y_train)
-# print("tree done")
-# svmModel = getSVM(X_train, Y_train)
-# print("svm done")
-# Y_predict1 = knn.predict(X_test)
-# print("prediction 1 done")
-# Y_predict2 = decisionTree.predict(X_test)
-# print("prediction 2 done")
-# Y_predict3 = svmModel.predict(X_test)
-# print("prediction 3 done")
+print("data ready")
 
-# print(accuracy_score(Y_test, Y_predict1))
-# print(accuracy_score(Y_test, Y_predict2))
-# print(accuracy_score(Y_test, Y_predict3))
+knn = getKNN(X_train, Y_train)
+print("done knn")
+decisionTree = getDecisionTree(X_train, Y_train)
+print("done tree")
+svmModel = getSVM(X_train, Y_train)
+print("done svm")
+Y_predict1 = knn.predict(X_test)
+print("done predict 1")
+Y_predict2 = decisionTree.predict(X_test)
+print("done predict 2")
+Y_predict3 = svmModel.predict(X_test)
+print("done predict 3")
+
+print(accuracy_score(Y_test, Y_predict1))
+print(accuracy_score(Y_test, Y_predict2))
+print(accuracy_score(Y_test, Y_predict3))
+
+img1 = cv2.imread("./testImage1.png")
+dummy, x1 = find_bounding_box(img1)
+cv2.imwrite("./TestImage1Processed.png", x1)
+x1 = np.reshape(x1, (1024))
+
+img2 = cv2.imread("./testImage2.png")
+dummy, x2 = find_bounding_box(img2)
+cv2.imwrite("./TestImage2Processed.png", x2)
+x2 = np.reshape(x2, (1024))
+
+img3 = cv2.imread("./testImage3.png")
+dummy, x3 = find_bounding_box(img3)
+cv2.imwrite("./TestImage3Processed.png", x3)
+x3 = np.reshape(x3, (1024))
+
+print(knn.predict([x1, x2, x3]))
+print(decisionTree.predict([x1, x2, x3]))
+print(svmModel.predict([x1, x2, x3]))

@@ -13,20 +13,35 @@ def splitDataSet(X, Y):
 
 
 def getKNN(X, Y):
-    knn = KNeighborsClassifier(n_neighbors=1)
-    knn.fit(X, Y)
+    knn = retrieveObject("./objects/knn.joblib")
+
+    if knn == None:
+        knn = KNeighborsClassifier(n_neighbors=1)
+        knn.fit(X, Y)
+
+    saveObject(knn, "./objects/knn.joblib")
     return knn
 
 
 def getDecisionTree(X, Y):
-    decisionTree = DecisionTreeClassifier()
-    decisionTree.fit(X, Y)
+    decisionTree = retrieveObject("./objects/decisionTree.joblib")
+
+    if decisionTree == None:
+        decisionTree = DecisionTreeClassifier()
+        decisionTree.fit(X, Y)
+
+    saveObject(decisionTree, "./objects/decisionTree.joblib")
     return decisionTree
 
 
 def getSVM(X, Y):
-    svmModel = SVC()
-    svmModel.fit(X, Y)
+    svmModel = retrieveObject("./objects/svm.joblib")
+
+    if svmModel == None:
+        svmModel = SVC()
+        svmModel.fit(X, Y)
+
+    saveObject(svmModel, "./objects/svm.joblib")
     return svmModel
 
 
