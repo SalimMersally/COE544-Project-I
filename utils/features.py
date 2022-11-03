@@ -41,14 +41,19 @@ def number_of_inner_closed_loops(img):
 
 
 def get_proj_histogram(img):
-    img = img/255  
+    img = img/255
     to_one_dimension = []
     for i in range(32):
         su = 0
         for j in range(32):
-            su += img[j][i]
+            val = img[j][i]
+            if (val<0.5):
+              val = 0
+            else:
+              val = 1
+            su += val
         to_one_dimension.append(su)
-
+    print(to_one_dimension)
     return to_one_dimension
 
 
