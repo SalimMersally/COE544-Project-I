@@ -2,6 +2,10 @@ import imutils
 from imutils.contours import sort_contours
 import numpy as np
 import cv2
+import os
+import csv
+from utils.classifiers import *
+from pprint import pprint
 
 ##the function bellow aims to find and sort contours input images##
 
@@ -81,7 +85,7 @@ def find_bounding_box(img):
         )
 
         padded = cv2.resize(padded, (32, 32))
-
+        print(padded)
         # add character image and dimension from original image into the characters array
         characters.append((padded, (x, y, w, h)))
         return characters, padded
@@ -94,3 +98,36 @@ def draw_bounding_boxes(img, characters):
         cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
     cv2.imshow(img)
     cv2.waitKey(0)
+
+
+# this method process all images from dataSet folder
+# it also saves X and Y
+def process_images():
+    X = []
+    Y = []
+    path = os.path.join(os.getcwd(), "dataSet", "english.csv")
+    file = open(path)
+    fileCSV = csv.reader(file)
+    for row in fileCSV:
+        if row[1] == "label":
+            continue
+        print(row[0])
+        imagePath = os.path.join(os.getcwd(), "dataSet", row[0].replace("/", "\\"))
+        img = cv2.imread(imagePath)
+        chracters, processedImg = find_bounding_box(img)
+        X.append(processedImg.tolist())
+        Y.append(row[1])
+
+    saveObject(X, "./objects/X.joblib")
+    saveObject(Y, "./objects/Y.joblib")
+    return X, Y
+
+
+def get_dataSet_or_process_images():
+    X = retrieveObject("./objects/X.joblib")
+    Y = retrieveObject("./objects/Y.joblib")
+
+    if X == None or Y == None:
+        X, Y = process_images()
+
+    return X, Y

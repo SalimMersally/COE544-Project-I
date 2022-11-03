@@ -30,9 +30,16 @@ def getSVM(X, Y):
     return svmModel
 
 
-def saveClassifier(classifier, fileName):
-    dump(classifier, fileName)
+def saveObject(object, fileName):
+    dump(object, fileName)
 
 
-def retrieveClassifier(fileName):
-    return load(fileName)
+def retrieveObject(fileName):
+    object = None
+
+    try:
+        object = load(fileName)
+    except:
+        print("There is no file with the following name: " + fileName)
+
+    return object
