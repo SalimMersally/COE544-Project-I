@@ -4,9 +4,13 @@ from utils.features import *
 from utils.featureChoice import *
 from pprint import pprint
 from sklearn.metrics import accuracy_score
+from sklearn.datasets import load_iris
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2, f_classif, mutual_info_classif
 
 
 X, Y = get_dataSet_or_process_images()
+X_features = []
 
 # for image in X:
 #     feature1 = average_distance_from_center(image)
@@ -19,49 +23,86 @@ X, Y = get_dataSet_or_process_images()
 #     features.append(feature4)
 #     features.append(feature5)
 #     features.append(feature6)
-#     print(features)
+#     X_features.append(features)
 
+
+# importing required libraries
+from skimage.io import imread
+from skimage.transform import resize
+from skimage.feature import hog
+from skimage import exposure
+import matplotlib.pyplot as plt
+
+
+image = imread("./img001-002.png")
+imageResized = resize(image, (32, 32))
+fd, hogRes = hog(
+    imageResized,
+    orientations=9,
+    pixels_per_cell=(8, 8),
+    cells_per_block=(2, 2),
+    visualize=True,
+    multichannel=True,
+)
+
+print(np.shape(fd))
+print(np.shape(hogRes))
 
 for i in range(len(X)):
-    print(i)
-    X[i] = np.reshape(X[i], (1024))
+    # print(np.shape(X[i]))
+
+    fd = hog(
+        X[i],
+        orientations=8,
+        pixels_per_cell=(8, 8),
+        cells_per_block=(2, 2),
+        multichannel=False,
+    )
+
+    X[i] = np.reshape(fd, (288))
+
+
+# selectedX = SelectKBest(f_classif, k=250).fit_transform(X, Y)
 
 (X_train, X_test, Y_train, Y_test) = splitDataSet(X, Y)
-
-print("data ready")
-
-knn = getKNN(X_train, Y_train)
-print("done knn")
-decisionTree = getDecisionTree(X_train, Y_train)
-print("done tree")
 svmModel = getSVM(X_train, Y_train)
-print("done svm")
-Y_predict1 = knn.predict(X_test)
-print("done predict 1")
-Y_predict2 = decisionTree.predict(X_test)
-print("done predict 2")
-Y_predict3 = svmModel.predict(X_test)
-print("done predict 3")
+Y_predict = svmModel.predict(X_test)
+accuracy = accuracy_score(Y_test, Y_predict)
 
-print(accuracy_score(Y_test, Y_predict1))
-print(accuracy_score(Y_test, Y_predict2))
-print(accuracy_score(Y_test, Y_predict3))
+print(str(accuracy))
 
 img1 = cv2.imread("./testImage1.png")
 dummy, x1 = find_bounding_box(img1)
-cv2.imwrite("./TestImage1Processed.png", x1)
-x1 = np.reshape(x1, (1024))
+fd1 = hog(
+    x1,
+    orientations=8,
+    pixels_per_cell=(8, 8),
+    cells_per_block=(2, 2),
+    multichannel=False,
+)
 
 img2 = cv2.imread("./testImage2.png")
 dummy, x2 = find_bounding_box(img2)
 cv2.imwrite("./TestImage2Processed.png", x2)
-x2 = np.reshape(x2, (1024))
+fd2 = hog(
+    x2,
+    orientations=8,
+    pixels_per_cell=(8, 8),
+    cells_per_block=(2, 2),
+    multichannel=False,
+)
 
 img3 = cv2.imread("./testImage3.png")
 dummy, x3 = find_bounding_box(img3)
 cv2.imwrite("./TestImage3Processed.png", x3)
-x3 = np.reshape(x3, (1024))
+fd3 = hog(
+    x3,
+    orientations=8,
+    pixels_per_cell=(8, 8),
+    cells_per_block=(2, 2),
+    multichannel=False,
+)
 
-print(knn.predict([x1, x2, x3]))
-print(decisionTree.predict([x1, x2, x3]))
-print(svmModel.predict([x1, x2, x3]))
+# print(knn.predict([fd1, fd2, fd3]))
+# print(decisionTree.predict([fd1, fd2, fd3]))
+print(svmModel.predict([fd1, fd2, fd3]))

@@ -3,6 +3,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 from joblib import dump, load
+from sklearn.ensemble import BaggingClassifier
 
 
 def splitDataSet(X, Y):
@@ -14,6 +15,7 @@ def splitDataSet(X, Y):
 
 def getKNN(X, Y):
     knn = retrieveObject("./objects/knn.joblib")
+    knn = None
 
     if knn == None:
         knn = KNeighborsClassifier(n_neighbors=1)
@@ -25,9 +27,10 @@ def getKNN(X, Y):
 
 def getDecisionTree(X, Y):
     decisionTree = retrieveObject("./objects/decisionTree.joblib")
+    decisionTree = None
 
     if decisionTree == None:
-        decisionTree = DecisionTreeClassifier()
+        decisionTree = DecisionTreeClassifier(max_depth=200)
         decisionTree.fit(X, Y)
 
     saveObject(decisionTree, "./objects/decisionTree.joblib")
@@ -36,13 +39,14 @@ def getDecisionTree(X, Y):
 
 def getSVM(X, Y):
     svmModel = retrieveObject("./objects/svm.joblib")
+    svmModel = None
 
     if svmModel == None:
-        svmModel = SVC()
-        svmModel.fit(X, Y)
+        bagging = BaggingClassifier(SVC(kernel="linear"), n_estimators=25)
+        bagging.fit(X, Y)
 
     saveObject(svmModel, "./objects/svm.joblib")
-    return svmModel
+    return bagging
 
 
 def saveObject(object, fileName):

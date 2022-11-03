@@ -85,7 +85,6 @@ def find_bounding_box(img):
         )
 
         padded = cv2.resize(padded, (32, 32))
-        print(padded)
         # add character image and dimension from original image into the characters array
         characters.append((padded, (x, y, w, h)))
         return characters, padded
@@ -115,7 +114,7 @@ def process_images():
         imagePath = os.path.join(os.getcwd(), "dataSet", row[0].replace("/", "\\"))
         img = cv2.imread(imagePath)
         chracters, processedImg = find_bounding_box(img)
-        X.append(processedImg.tolist())
+        X.append(processedImg)
         Y.append(row[1])
 
     saveObject(X, "./objects/X.joblib")
