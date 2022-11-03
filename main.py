@@ -12,10 +12,13 @@ from sklearn.feature_selection import chi2, f_classif, mutual_info_classif
 X, Y = get_dataSet_or_process_images()
 X_features = []
 
-# for image in X:
+#for image in X:
 #     feature1 = average_distance_from_center(image)
 #     feature2 = number_of_inner_closed_loops(image)
 #     feature3, feature4, feature5, feature6 = calc_perc_whitepx_quadrants(image)
+# path = os.path.join(os.getcwd(), "dataSet","Img","img002-010.png")
+# feature7 =  hough_lines(path)  
+# print("feature = " + str(feature7))
 #     features = get_proj_histogram(image)
 #     features.append(feature1)
 #     features.append(feature2)
@@ -69,7 +72,6 @@ svmModel = getSVM(X_train, Y_train)
 Y_predict = svmModel.predict(X_test)
 accuracy = accuracy_score(Y_test, Y_predict)
 
-print(str(accuracy))
 
 img1 = cv2.imread("./testImage1.png")
 dummy, x1 = find_bounding_box(img1)

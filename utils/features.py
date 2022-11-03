@@ -1,6 +1,10 @@
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
+from skimage.transform import (hough_line, hough_line_peaks)
+import numpy as np
+import cv2
+from matplotlib import pyplot as plt
 
 
 # in these methods all images are already processes
@@ -84,3 +88,22 @@ def calc_perc_whitepx_quadrants(img):
         perc_white_upper_left,
         perc_white_upper_right,
     )
+
+
+def hough_lines(path):
+    
+    img = cv2.imread(path,0)
+    img = ~img
+    
+    
+    # Set a precision of 1 degree. (Divide into 180 data points)
+    # You can increase the number of points if needed. 
+    tested_angles = np.linspace(-np.pi / 2, np.pi / 2, 180)
+
+    # Perform Hough Transformation to change x, y, to h, theta, dist space.
+    hspace, theta, dist = hough_line(img, tested_angles)
+    
+    #Now, to find the location of peaks in the hough space we can use hough_line_peaks
+    h, q, d = hough_line_peaks(hspace, theta, dist)
+    
+    return len(h)
