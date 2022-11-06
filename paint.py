@@ -8,6 +8,7 @@ from utils.classifiers import *
 from utils.features import *
 from utils.preprocess import *
 import os
+from utils.nlp import correct_word
 
 
 # window class
@@ -195,8 +196,14 @@ class Window(QMainWindow):
         img4 = cv2.imread("./image.png")
         svmModel = getSVM(None, None)
         dummy, x4 = find_bounding_box(img4)
-        fd4 = hog(x4, orientations=8, pixels_per_cell=(8, 8), cells_per_block=(2, 2))
-        print(svmModel.predict([fd4]))
+        
+        word = ""
+        for xs in x4:
+            fd4 = hog(xs, orientations=8, pixels_per_cell=(8, 8), cells_per_block=(2, 2))
+            predictedLetter = svmModel.predict([fd4])
+            word = word + str(predictedLetter[0])
+            print(predictedLetter)
+        print (correct_word(word))
         os.remove("./image.png")
         self.clear()
 

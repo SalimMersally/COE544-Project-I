@@ -42,7 +42,7 @@ def find_bounding_box(img):
     characters = []
 
     contours = find_contours(img)
-
+    paddedArray = []
     for contour in contours:
         # get the bounding box for each contour
         (x, y, w, h) = cv2.boundingRect(contour)
@@ -85,9 +85,11 @@ def find_bounding_box(img):
         )
 
         padded = cv2.resize(padded, (32, 32))
+        paddedArray.append(padded)
         # add character image and dimension from original image into the characters array
         characters.append((padded, (x, y, w, h)))
-        return characters, padded
+    print(paddedArray)
+    return characters, paddedArray
 
 
 # the method bellow creates a visual representation of the bounding box on original images
@@ -113,8 +115,8 @@ def process_images():
         print(row[0])
         imagePath = os.path.join(os.getcwd(), "dataSet", row[0].replace("/", "\\"))
         img = cv2.imread(imagePath)
-        chracters, processedImg = find_bounding_box(img)
-        hog = get_HOG(processedImg)
+        characters, processedImg = find_bounding_box(img)
+        hog = get_HOG(img)
         X.append(hog)
         Y.append(row[1])
 
