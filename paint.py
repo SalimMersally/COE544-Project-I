@@ -192,6 +192,7 @@ class Window(QMainWindow):
         self.update()
 
     def predict(self):
+      try: 
         self.image.save("./image.png")
         img4 = cv2.imread("./image.png")
         svmModel = getSVM(None, None)
@@ -206,7 +207,9 @@ class Window(QMainWindow):
         print (correct_word(word))
         os.remove("./image.png")
         self.clear()
-
+      except:
+        print("error! bad handwriting! Please retry!")
+        self.clear()  
     # methods for changing pixel sizes
     def Pixel_4(self):
         self.brushSize = 4
