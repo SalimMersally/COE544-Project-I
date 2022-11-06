@@ -1,16 +1,12 @@
 import numpy as np
 import cv2
-<<<<<<< Updated upstream
 import matplotlib.pyplot as plt
 from skimage.transform import (hough_line, hough_line_peaks)
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
-||||||| constructed merge base
 import matplotlib.pyplot as plt
-=======
 from skimage.feature import hog
->>>>>>> Stashed changes
 
 
 # in these methods all images are already processes
