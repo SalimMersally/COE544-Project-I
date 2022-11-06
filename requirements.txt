@@ -3,5 +3,4 @@ imutils
 opencv-python
 matplotlib
 scikit-image
-scikit-image
-
+PyQt5

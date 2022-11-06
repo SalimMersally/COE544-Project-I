@@ -5,7 +5,7 @@ import cv2
 import os
 import csv
 from utils.classifiers import *
-from pprint import pprint
+from utils.features import *
 
 ##the function bellow aims to find and sort contours input images##
 
@@ -114,7 +114,8 @@ def process_images():
         imagePath = os.path.join(os.getcwd(), "dataSet", row[0].replace("/", "\\"))
         img = cv2.imread(imagePath)
         chracters, processedImg = find_bounding_box(img)
-        X.append(processedImg)
+        hog = get_HOG(processedImg)
+        X.append(hog)
         Y.append(row[1])
 
     saveObject(X, "./objects/X.joblib")

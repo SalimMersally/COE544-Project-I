@@ -39,14 +39,13 @@ def getDecisionTree(X, Y):
 
 def getSVM(X, Y):
     svmModel = retrieveObject("./objects/svm.joblib")
-    svmModel = None
 
     if svmModel == None:
-        bagging = BaggingClassifier(SVC(kernel="linear"), n_estimators=25)
-        bagging.fit(X, Y)
+        svmModel = SVC()
+        svmModel.fit(X, Y)
 
     saveObject(svmModel, "./objects/svm.joblib")
-    return bagging
+    return svmModel
 
 
 def saveObject(object, fileName):
