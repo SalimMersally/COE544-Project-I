@@ -185,27 +185,17 @@ class Window(QMainWindow):
         self.update()
 
     def predict(self):
-        try:
-            self.image.save("./image.png")
-            img4 = cv2.imread("./image.png")
-            svmModel = getSVM(None, None)
-            dummy, x4 = find_bounding_box(img4)
+        self.image.save("./image.png")
+        img4 = cv2.imread("./image.png")
+        svmModel = getSVM(None, None)
+        dummy, letters = find_bounding_box(img4)
 
-            word = ""
-            for xs in x4:
-                fd4 = hog(
-                    xs, orientations=8, pixels_per_cell=(8, 8), cells_per_block=(2, 2)
-                )
-                predictedLetter = svmModel.predict([fd4])
-                word = word + str(predictedLetter[0])
-                print(predictedLetter)
-                self.prediction.setText("Prediction: " + predictedLetter[0])
-            print(correct_word(word))
-            os.remove("./image.png")
-            self.clear()
-        except:
-            print("error! bad handwriting! Please retry!")
-            self.clear()
+        hog = get_HOG(letters[0])
+        sift = get_dense_SIFT(letters[0])
+
+        result = svmModel.predict([np.concatenate((sift, hog), axis=0)])
+        self.clear()
+        self.prediction.setText("Prediction: " + result[0])
 
     # methods for changing brush color
     def blackColor(self):

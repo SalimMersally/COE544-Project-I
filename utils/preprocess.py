@@ -117,8 +117,11 @@ def process_images():
         img = cv2.imread(imagePath)
         characters, processedImg = find_bounding_box(img)
         processedImg = processedImg[0]  # trained images have only one letter
+
+        sift = get_dense_SIFT(processedImg)
         hog = get_HOG(processedImg)
-        X.append(hog)
+
+        X.append(np.concatenate((sift, hog), axis=0))
         Y.append(row[1])
 
     saveObject(X, "./objects/X.joblib")

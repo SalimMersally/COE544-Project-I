@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
-from skimage.transform import (hough_line, hough_line_peaks)
+from skimage.transform import hough_line, hough_line_peaks
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
@@ -93,24 +93,37 @@ def calc_perc_whitepx_quadrants(img):
 
 
 def hough_lines(path):
-    
-    img = cv2.imread(path,0)
+
+    img = cv2.imread(path, 0)
     img = ~img
-    
-    
+
     # Set a precision of 1 degree. (Divide into 180 data points)
-    # You can increase the number of points if needed. 
+    # You can increase the number of points if needed.
     tested_angles = np.linspace(-np.pi / 2, np.pi / 2, 180)
 
     # Perform Hough Transformation to change x, y, to h, theta, dist space.
     hspace, theta, dist = hough_line(img, tested_angles)
-    
-    #Now, to find the location of peaks in the hough space we can use hough_line_peaks
+
+    # Now, to find the location of peaks in the hough space we can use hough_line_peaks
     h, q, d = hough_line_peaks(hspace, theta, dist)
-    
+
     return len(h)
 
 
 def get_HOG(img):
     fd = hog(img, orientations=8, pixels_per_cell=(8, 8), cells_per_block=(2, 2))
     return fd
+
+
+def get_dense_SIFT(img):
+    sift = cv2.SIFT_create()
+    step_size = 8
+    kp = [
+        cv2.KeyPoint(x, y, step_size)
+        for y in range(0, img.shape[0], step_size)
+        for x in range(0, img.shape[1], step_size)
+    ]
+
+    dense_feat = sift.compute(img, kp)
+    discreptor = np.reshape(dense_feat[1], (2048,))
+    return discreptor
