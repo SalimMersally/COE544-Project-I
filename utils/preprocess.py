@@ -88,7 +88,7 @@ def find_bounding_box(img):
         paddedArray.append(padded)
         # add character image and dimension from original image into the characters array
         characters.append((padded, (x, y, w, h)))
-    print(paddedArray)
+
     return characters, paddedArray
 
 
@@ -116,7 +116,8 @@ def process_images():
         imagePath = os.path.join(os.getcwd(), "dataSet", row[0].replace("/", "\\"))
         img = cv2.imread(imagePath)
         characters, processedImg = find_bounding_box(img)
-        hog = get_HOG(img)
+        processedImg = processedImg[0]  # trained images have only one letter
+        hog = get_HOG(processedImg)
         X.append(hog)
         Y.append(row[1])
 
