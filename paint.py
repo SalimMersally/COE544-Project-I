@@ -9,6 +9,7 @@ from utils.features import *
 from utils.preprocess import *
 import os
 from utils.nlp import correct_word
+from PyQt5.QtWidgets import QPushButton
 
 
 # window class
@@ -17,10 +18,26 @@ class Window(QMainWindow):
         super().__init__()
 
         # setting title
-        self.setWindowTitle("Paint with PyQt5")
+        self.setWindowTitle("Paint")
 
         # setting geometry to main window
         self.setGeometry(100, 100, 800, 600)
+
+        mainWindow = QWidget()
+
+        pybutton = QPushButton("Predict", self)
+        pybutton.resize(100, 32)
+        pybutton.move(300, 500)
+        pybutton.clicked.connect(self.predict)
+
+        pybutton = QPushButton("Clear", self)
+        pybutton.resize(100, 32)
+        pybutton.move(400, 500)
+        pybutton.clicked.connect(self.clear)
+
+        self.prediction = QLabel(self)
+        self.prediction.setText("Prediction: ")
+        self.prediction.move(300, 550)
 
         # creating image object
         self.image = QImage(self.size(), QImage.Format_RGB32)
@@ -32,7 +49,7 @@ class Window(QMainWindow):
         # drawing flag
         self.drawing = False
         # default brush size
-        self.brushSize = 2
+        self.brushSize = 12
         # default color
         self.brushColor = Qt.black
 
@@ -44,9 +61,6 @@ class Window(QMainWindow):
 
         # creating file menu for save and clear action
         fileMenu = mainMenu.addMenu("File")
-
-        # adding brush size to main menu
-        b_size = mainMenu.addMenu("Brush Size")
 
         # adding brush color to ain menu
         b_color = mainMenu.addMenu("Brush Color")
@@ -73,27 +87,6 @@ class Window(QMainWindow):
         predictAction = QAction("Predict", self)
         fileMenu.addAction(predictAction)
         predictAction.triggered.connect(self.predict)
-
-        # creating options for brush sizes
-        # creating action for selecting pixel of 4px
-        pix_4 = QAction("4px", self)
-        # adding this action to the brush size
-        b_size.addAction(pix_4)
-        # adding method to this
-        pix_4.triggered.connect(self.Pixel_4)
-
-        # similarly repeating above steps for different sizes
-        pix_7 = QAction("7px", self)
-        b_size.addAction(pix_7)
-        pix_7.triggered.connect(self.Pixel_7)
-
-        pix_9 = QAction("9px", self)
-        b_size.addAction(pix_9)
-        pix_9.triggered.connect(self.Pixel_9)
-
-        pix_12 = QAction("12px", self)
-        b_size.addAction(pix_12)
-        pix_12.triggered.connect(self.Pixel_12)
 
         # creating options for brush color
         # creating action for black color
@@ -192,36 +185,27 @@ class Window(QMainWindow):
         self.update()
 
     def predict(self):
-      try: 
-        self.image.save("./image.png")
-        img4 = cv2.imread("./image.png")
-        svmModel = getSVM(None, None)
-        dummy, x4 = find_bounding_box(img4)
-        
-        word = ""
-        for xs in x4:
-            fd4 = hog(xs, orientations=8, pixels_per_cell=(8, 8), cells_per_block=(2, 2))
-            predictedLetter = svmModel.predict([fd4])
-            word = word + str(predictedLetter[0])
-            print(predictedLetter)
-        print (correct_word(word))
-        os.remove("./image.png")
-        self.clear()
-      except:
-        print("error! bad handwriting! Please retry!")
-        self.clear()  
-    # methods for changing pixel sizes
-    def Pixel_4(self):
-        self.brushSize = 4
+        try:
+            self.image.save("./image.png")
+            img4 = cv2.imread("./image.png")
+            svmModel = getSVM(None, None)
+            dummy, x4 = find_bounding_box(img4)
 
-    def Pixel_7(self):
-        self.brushSize = 7
-
-    def Pixel_9(self):
-        self.brushSize = 9
-
-    def Pixel_12(self):
-        self.brushSize = 12
+            word = ""
+            for xs in x4:
+                fd4 = hog(
+                    xs, orientations=8, pixels_per_cell=(8, 8), cells_per_block=(2, 2)
+                )
+                predictedLetter = svmModel.predict([fd4])
+                word = word + str(predictedLetter[0])
+                print(predictedLetter)
+                self.prediction.setText("Prediction: " + predictedLetter[0])
+            print(correct_word(word))
+            os.remove("./image.png")
+            self.clear()
+        except:
+            print("error! bad handwriting! Please retry!")
+            self.clear()
 
     # methods for changing brush color
     def blackColor(self):
