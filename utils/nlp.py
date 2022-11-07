@@ -3,7 +3,9 @@ from spellchecker import SpellChecker
 
 def correct_word(str):
     
-
+    if len(str) == 1:
+        return str,[]
+    
     spell = SpellChecker()
 
     # find those words that may be misspelled
@@ -19,9 +21,9 @@ def correct_word(str):
     
         corrected.append(spell.correction(word))
     
-        return(" ".join(corrected[::-1]))
+        return(" ".join(corrected[::-1])),", ".join(spell.candidates(word))
 
 
 
-print(correct_word("that"))
+print(str(correct_word("hel1o")))
     

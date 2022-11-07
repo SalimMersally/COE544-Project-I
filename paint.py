@@ -37,7 +37,13 @@ class Window(QMainWindow):
 
         self.prediction = QLabel(self)
         self.prediction.setText("Prediction: ")
-        self.prediction.move(300, 550)
+        self.prediction.move(300, 530)
+        
+        self.likely = QLabel(self)
+        self.likely.setText("Other: ")
+        self.likely.move(300, 550)
+        self.likely.resize(200, 40)
+        self.likely.setWordWrap(True)
 
         # creating image object
         self.image = QImage(self.size(), QImage.Format_RGB32)
@@ -185,17 +191,41 @@ class Window(QMainWindow):
         self.update()
 
     def predict(self):
-        self.image.save("./image.png")
-        img4 = cv2.imread("./image.png")
-        svmModel = getSVM(None, None)
-        dummy, letters = find_bounding_box(img4)
-
-        hog = get_HOG(letters[0])
-        sift = get_dense_SIFT(letters[0])
-
-        result = svmModel.predict([np.concatenate((sift, hog), axis=0)])
-        self.clear()
-        self.prediction.setText("Prediction: " + result[0])
+      self.image.save("./image.png")
+      img4 = cv2.imread("./image.png")
+      svmModel = getSVM(None, None)
+      
+      try:
+        dummy, letters = find_bounding_box(img4) 
+        word = ""
+        for letter in letters: 
+            hog = get_HOG(letter)
+            sift = get_dense_SIFT(letter)
+            result = svmModel.predict([np.concatenate((sift, hog), axis=0)])
+            word += result[0]
+        
+        corrected = correct_word(word)
+        
+        if(corrected==None):
+                print(word)
+                self.prediction.setText("Prediction: " + word)
+                self.likely.setText("Other: ")
+                os.remove("./image.png")
+                self.clear()
+        else: 
+                print(word)
+                word = corrected[0]
+                self.prediction.setText("Prediction: " + word)
+                print(corrected[1])
+                self.likely.setText("Other: "+corrected[1])
+                os.remove("./image.png")
+                self.clear()
+      except: 
+            # print("error!")
+            os.remove("./image.png")
+            self.likely.setText("Other: ")
+            self.clear()    
+        
 
     # methods for changing brush color
     def blackColor(self):
