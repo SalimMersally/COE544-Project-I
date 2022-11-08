@@ -38,6 +38,7 @@ class Window(QMainWindow):
         self.prediction = QLabel(self)
         self.prediction.setText("Prediction: ")
         self.prediction.move(300, 530)
+        self.prediction.resize(200, 20)
         
         self.likely = QLabel(self)
         self.likely.setText("Other: ")
@@ -193,6 +194,7 @@ class Window(QMainWindow):
     def predict(self):
       self.image.save("./image.png")
       img4 = cv2.imread("./image.png")
+      #draw_bounding_boxes(img4)
       svmModel = getSVM(None, None)
       
       try:
@@ -222,6 +224,7 @@ class Window(QMainWindow):
                 self.clear()
       except: 
             # print("error!")
+            self.prediction.setText("Prediction: " + word)
             os.remove("./image.png")
             self.likely.setText("Other: ")
             self.clear()    

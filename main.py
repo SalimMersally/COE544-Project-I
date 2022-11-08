@@ -10,7 +10,7 @@ X, Y = get_dataSet_or_process_images()
 print("splitting")
 (X_train, X_test, Y_train, Y_test) = splitDataSet(X, Y)
 
-print("reading svm")
+print("reading DT")
 svmModel = getSVM(X_train, Y_train)
 print("predicting")
 Y_predict = svmModel.predict(X_test)

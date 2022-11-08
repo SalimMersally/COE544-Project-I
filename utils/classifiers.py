@@ -31,7 +31,7 @@ def getDecisionTree(X, Y):
     decisionTree = None
 
     if decisionTree == None:
-        decisionTree = RandomForestClassifier(max_depth=200, random_state=0)
+        decisionTree = RandomForestClassifier(max_depth=200, n_estimators = 100)
         decisionTree.fit(X, Y)
 
     saveObject(decisionTree, "./objects/decisionTree.joblib")
