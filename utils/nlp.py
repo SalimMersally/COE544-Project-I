@@ -3,7 +3,7 @@ from spellchecker import SpellChecker
 
 def correct_word(str):
     
-    if len(str) == 1:
+    if len(str) == 1 or len(str)==2:
         return str,[]
     
     spell = SpellChecker()
