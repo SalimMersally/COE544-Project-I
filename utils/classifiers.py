@@ -4,6 +4,7 @@ from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 from joblib import dump, load
 from sklearn.ensemble import BaggingClassifier
+from sklearn.ensemble import RandomForestClassifier
 
 
 def splitDataSet(X, Y):
@@ -30,7 +31,7 @@ def getDecisionTree(X, Y):
     decisionTree = None
 
     if decisionTree == None:
-        decisionTree = DecisionTreeClassifier(max_depth=200)
+        decisionTree = RandomForestClassifier(max_depth=200, random_state=0)
         decisionTree.fit(X, Y)
 
     saveObject(decisionTree, "./objects/decisionTree.joblib")
