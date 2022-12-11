@@ -1,10 +1,14 @@
 from utils.classifiers import *
 from utils.preprocess import *
 from utils.features import *
+from utils.clustering import *
 from pprint import pprint
 from sklearn.metrics import *
 from paint import *
 
+print("cluster dataset")
+cluster_dataSet()
+get_excel()
 print("reading XY")
 X, Y = get_dataSet_or_process_images()
 print("splitting")

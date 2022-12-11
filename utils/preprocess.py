@@ -88,15 +88,14 @@ def find_bounding_box(img):
         paddedArray.append(padded)
         # add character image and dimension from original image into the characters array
         characters.append((padded, (x, y, w, h)))
-        
 
     return characters, paddedArray
 
 
 # the method bellow creates a visual representation of the bounding box on original images
 def draw_bounding_boxes(img):
-    
-    characters,img = find_bounding_box(img)
+
+    characters, img = find_bounding_box(img)
 
     boxes = [b[1] for b in characters]
     for (x, y, w, h) in boxes:
@@ -110,22 +109,23 @@ def draw_bounding_boxes(img):
 def process_images():
     X = []
     Y = []
-    path = os.path.join(os.getcwd(), "dataSet", "english.csv")
+    path = os.path.join(os.getcwd(), "dataSet", "cluster.csv")
     file = open(path)
     fileCSV = csv.reader(file)
     for row in fileCSV:
         if row[1] == "label":
             continue
         print(row[0])
-        imagePath = os.path.join(os.getcwd(), "dataSet", row[0].replace("/", "\\"))
+        imagePath = os.path.join(os.getcwd(), "dataSet/ImgClustered", row[0])
         img = cv2.imread(imagePath)
         characters, processedImg = find_bounding_box(img)
         processedImg = processedImg[0]  # trained images have only one letter
 
-        # sift = get_dense_SIFT(processedImg)
-        # hog = get_HOG(processedImg)
+        sift = get_dense_SIFT(processedImg)
+        hog = get_HOG(processedImg)
 
-        X.append(processedImg)
+        X.append(np.concatenate((sift, hog), axis=0))
+        # X.append(img)
         Y.append(row[1])
 
     saveObject(X, "./objects/X.joblib")
@@ -139,5 +139,24 @@ def get_dataSet_or_process_images():
 
     if X == None or Y == None:
         X, Y = process_images()
+
+    return X, Y
+
+
+def get_dataSet():
+    X = []
+    Y = []
+    path = os.path.join(os.getcwd(), "dataSet", "english.csv")
+    file = open(path)
+    fileCSV = csv.reader(file)
+    for row in fileCSV:
+        if row[1] == "label":
+            continue
+        print(row[0])
+        imagePath = os.path.join(os.getcwd(), "dataSet", row[0].replace("/", "\\"))
+        img = cv2.imread(imagePath)
+
+        X.append(img)
+        Y.append(row[1])
 
     return X, Y
