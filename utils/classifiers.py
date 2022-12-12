@@ -45,7 +45,7 @@ def getSVM(X, Y):
         svmModel = SVC()
         svmModel.fit(X, Y)
 
-    saveObject(svmModel, "./objects/svm.joblib")
+    # saveObject(svmModel, "./objects/svm.joblib")
     return svmModel
 
 

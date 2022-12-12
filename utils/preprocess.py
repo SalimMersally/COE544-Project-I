@@ -121,13 +121,14 @@ def process_images():
         characters, processedImg = find_bounding_box(img)
         processedImg = processedImg[0]  # trained images have only one letter
 
-        sift = get_dense_SIFT(processedImg)
-        hog = get_HOG(processedImg)
+        # sift = get_dense_SIFT(processedImg)
+        # hog = get_HOG(processedImg)
 
-        X.append(np.concatenate((sift, hog), axis=0))
-        # X.append(img)
+        # X.append(np.concatenate((sift, hog), axis=0))
+        X.append(processedImg)
         Y.append(row[1])
 
+    print(len(X))
     saveObject(X, "./objects/X.joblib")
     saveObject(Y, "./objects/Y.joblib")
     return X, Y
