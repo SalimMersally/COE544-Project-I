@@ -44,7 +44,7 @@ def get_SVM(X, Y):
     return svmModel
 
 
-X, Y = get_dataSet_or_process_images()
+X, Y = get_Clustered_No_Feature()
 (X, X_test_final, Y, Y_test_final) = splitDataSet(X, Y)
 X_feature_1 = []
 X_feature_2 = [[], []]

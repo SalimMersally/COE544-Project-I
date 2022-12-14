@@ -49,9 +49,9 @@ def number_of_inner_closed_loops(img):
 def get_proj_histogram_vert(img):
     img = img / 255
     to_one_dimension = []
-    for i in range(32):
+    for i in range(28):
         su = 0
-        for j in range(32):
+        for j in range(28):
             val = img[j][i]
             if val < 0.5:
                 val = 0
@@ -65,9 +65,9 @@ def get_proj_histogram_vert(img):
 def get_proj_histogram_horz(img):
     img = img / 255
     to_one_dimension = []
-    for i in range(32):
+    for i in range(28):
         su = 0
-        for j in range(32):
+        for j in range(28):
             val = img[i][j]
             if val < 0.5:
                 val = 0

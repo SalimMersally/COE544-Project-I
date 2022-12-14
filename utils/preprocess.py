@@ -130,7 +130,6 @@ def process_images():
         # X.append(processedImg)
         Y.append(row[1])
 
-    print(len(X))
     saveObject(X, "./objects/X.joblib")
     saveObject(Y, "./objects/Y.joblib")
     return X, Y
@@ -153,7 +152,7 @@ def get_dataSet():
     file = open(path)
     fileCSV = csv.reader(file)
     for row in fileCSV:
-        #if row[1] =='A':
+        # if row[1] =='A':
         #    break
         if row[1] == "label":
             continue
@@ -163,5 +162,33 @@ def get_dataSet():
 
         X.append(img)
         Y.append(row[1])
+
+    return X, Y
+
+
+def get_Clustered_No_Feature():
+    X = retrieveObject("./objects/X_noFeature.joblib")
+    Y = retrieveObject("./objects/Y_noFeature.joblib")
+
+    if X == None or Y == None:
+        X = []
+        Y = []
+        path = os.path.join(os.getcwd(), "dataSet", "cluster.csv")
+        file = open(path)
+        fileCSV = csv.reader(file)
+        for row in fileCSV:
+            if row[1] == "label":
+                continue
+            print(row[0])
+            imagePath = os.path.join(os.getcwd(), "dataSet/ImgClustered", row[0])
+            img = cv2.imread(imagePath)
+            characters, processedImg = find_bounding_box(img)
+            processedImg = processedImg[0]  # trained images have only one letter
+
+            X.append(processedImg)
+            Y.append(row[1])
+
+    saveObject(X, "./objects/X_noFeature.joblib")
+    saveObject(Y, "./objects/Y_noFeature.joblib")
 
     return X, Y
