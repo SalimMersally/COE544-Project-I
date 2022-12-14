@@ -195,6 +195,7 @@ class Window(QMainWindow):
         self.image.save("./image.png")
         img = cv2.imread("./image.png")
         print("getting svm")
+        svm = getSVM(None, None, "svm")
 
         try:
             dummy, letters = find_bounding_box(img)

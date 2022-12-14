@@ -127,7 +127,6 @@ def process_images():
         hog = get_HOG(processedImg)
 
         X.append(np.concatenate((sift, hog), axis=0))
-        # X.append(processedImg)
         Y.append(row[1])
 
     saveObject(X, "./objects/X.joblib")
@@ -194,3 +193,84 @@ def get_Clustered_No_Feature():
     saveObject(Y, "./objects/Y_noFeature.joblib")
 
     return X, Y
+
+
+character = [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "u",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z",
+]
+
+
+def get_character_vs_number(Y):
+    Y_differ = []
+    for y in Y:
+        index = 0
+        for i in range(len(character)):
+            if y == character[i]:
+                index = i
+                break
+        if index <= 9:
+            Y_differ.append(0)
+        else:
+            Y_differ.append(1)
+    return Y_differ
