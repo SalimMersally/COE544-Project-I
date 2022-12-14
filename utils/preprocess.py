@@ -113,6 +113,8 @@ def process_images():
     file = open(path)
     fileCSV = csv.reader(file)
     for row in fileCSV:
+        # if row[1] =='a':
+        #     break
         if row[1] == "label":
             continue
         print(row[0])
@@ -151,6 +153,8 @@ def get_dataSet():
     file = open(path)
     fileCSV = csv.reader(file)
     for row in fileCSV:
+        #if row[1] =='A':
+        #    break
         if row[1] == "label":
             continue
         print(row[0])

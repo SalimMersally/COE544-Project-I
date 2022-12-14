@@ -30,22 +30,47 @@ from paint import *
 # print("recall: " + str(recall))
 # print("F score: " + str(fscore))
 
-# cnn = getCNN()
-# X, Y = get_dataSet_or_process_images()
+cnn = getCNN()
+X, Y = get_dataSet_or_process_images()
 
-# X = np.array(X).astype("float32")
-# X = np.expand_dims(X, axis=-1)
 
-# le = LabelEncoder()
-# Y = le.fit_transform(Y)
-# Y = keras.utils.to_categorical(Y, 62)
+X = np.array(X).astype('float32')
+# Creating a instance of label Encoder.
+le = LabelEncoder()
+# Using .fit_transform function to fit label
+# encoder and return encoded label
+import keras
+Y = le.fit_transform(Y)
 
-# preds = cnn.predict(X)
 
-# CalculatedAccuracy = sum(preds == Y) / len(Y)
-# metric = keras.metrics.Accuracy()
-# acc = metric(Y, preds)
-# print(acc, CalculatedAccuracy)
+x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size = 0.2)
+
+x_train = x_train.reshape(x_train.shape[0], x_train.shape[1], x_train.shape[2], 1)
+print("New shape of train data:", x_train.shape)
+
+x_test = x_test.reshape(x_test.shape[0], x_test.shape[1], x_test.shape[2], 1)
+print("New shape of test data:", x_test.shape)
+
+y_train =  keras.utils.to_categorical(y_train, num_classes = 62, dtype = 'int')
+y_test =  keras.utils.to_categorical(y_test, num_classes = 62, dtype = 'int')
+
+
+preds = cnn.predict(x_test)
+
+for pred in preds:
+  for i in range(len(pred)):
+    if pred[i] == pred.max():
+       pred[i] = 1.0
+    else:
+       pred[i] = 0.0
+
+print(preds[0])
+print(y_test[0])
+
+CalculatedAccuracy = sum(preds == y_test) / len(y_test)
+metric = keras.metrics.Accuracy()
+acc = metric(y_test, preds)
+print(acc)
 
 # create pyqt5 app
 App = QApplication(sys.argv)

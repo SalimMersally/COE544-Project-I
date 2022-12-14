@@ -205,6 +205,13 @@ class Window(QMainWindow):
                 X = np.array([letter]).astype("float32")
                 X = np.expand_dims(X, axis=-1)
                 result = cnn.predict(X)
+                for pred in result:
+                    for i in range(len(pred)):
+                        if pred[i] == pred.max():
+                            pred[i] = 1
+                        else:
+                            pred[i] = 0
+                
                 decoded = decodeResult(result[0])
                 word += decoded[0]
 
