@@ -194,7 +194,7 @@ class Window(QMainWindow):
     def predict(self):
         self.image.save("./image.png")
         img = cv2.imread("./image.png")
-        cnn = getCNN()
+        svm = getSVM(None, None)
 
         try:
             dummy, letters = find_bounding_box(img)

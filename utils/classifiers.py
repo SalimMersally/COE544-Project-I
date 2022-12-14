@@ -41,11 +41,11 @@ def getDecisionTree(X, Y):
 
 
 def getSVM(X, Y):
-    svmModel = retrieveObject("./objects/svm.joblib")
+    # svmModel = retrieveObject("./objects/svm.joblib")
 
-    if svmModel == None:
-        svmModel = SVC()
-        svmModel.fit(X, Y)
+    # if svmModel == None:
+    svmModel = SVC()
+    svmModel.fit(X, Y)
 
     # saveObject(svmModel, "./objects/svm.joblib")
     return svmModel
@@ -138,7 +138,17 @@ def decodeResult(results):
         "z",
     ]
     decoded = 0
+    print(results)
     for i in range(len(results)):
-        if results[i] == 1:
+        if results[i] > 0.9:
             decoded = character[i]
     return decoded
+
+
+def getIndex(array):
+    index = 0
+    for i in range(len(array)):
+        if int(array[i]) == 1:
+            index = i
+            break
+    return index
