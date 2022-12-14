@@ -49,6 +49,7 @@ X, Y = get_Clustered_No_Feature()
 X_feature_1 = []
 X_feature_2 = [[], []]
 X_feature_3 = [[], [], [], []]
+X_feature_4 = [[], [], [], [], [], [], [], []]
 
 
 for x in X:
@@ -79,29 +80,73 @@ svmModels_2.append(svmModels_2_2)
 svmModels_3 = [[], []]
 
 for x in X_groups_2_1[0]:
-    X_feature_3[0].append(np.concatenate((get_dense_SIFT(x), get_HOG(x)), axis=0))
+    X_feature_3[0].append(get_dense_SIFT(x))
 for x in X_groups_2_1[1]:
-    X_feature_3[1].append(np.concatenate((get_dense_SIFT(x), get_HOG(x)), axis=0))
+    X_feature_3[1].append(get_dense_SIFT(x))
 for x in X_groups_2_2[0]:
-    X_feature_3[2].append(np.concatenate((get_dense_SIFT(x), get_HOG(x)), axis=0))
+    X_feature_3[2].append(get_dense_SIFT(x))
 for x in X_groups_2_2[1]:
-    X_feature_3[3].append(np.concatenate((get_dense_SIFT(x), get_HOG(x)), axis=0))
+    X_feature_3[3].append(get_dense_SIFT(x))
 
-
-# cluster_and_get_SVM(X_groups_2_1[0], Y_groups_2_1[0], X_feature_3[0])
-# cluster_and_get_SVM(X_groups_2_1[1], Y_groups_2_1[1], X_feature_3[1])
-# cluster_and_get_SVM(X_groups_2_2[0], Y_groups_2_2[0], X_feature_3[2])
-# cluster_and_get_SVM(X_groups_2_2[1], Y_groups_2_2[1], X_feature_3[3])
 
 print("3-1")
-svmModels_3[0].append(get_SVM(X_feature_3[0], Y_groups_2_1[0]))
+X_groups_3_1, Y_groups_3_1, svmModel_3_1 = cluster_and_get_SVM(
+    X_groups_2_1[0], Y_groups_2_1[0], X_feature_3[0]
+)
 print("3-2")
-svmModels_3[0].append(get_SVM(X_feature_3[1], Y_groups_2_1[1]))
+X_groups_3_2, Y_groups_3_2, svmModel_3_2 = cluster_and_get_SVM(
+    X_groups_2_1[1], Y_groups_2_1[1], X_feature_3[1]
+)
 print("3-3")
-svmModels_3[1].append(get_SVM(X_feature_3[2], Y_groups_2_2[0]))
+X_groups_3_3, Y_groups_3_3, svmModel_3_3 = cluster_and_get_SVM(
+    X_groups_2_2[0], Y_groups_2_2[0], X_feature_3[2]
+)
 print("3-4")
-svmModels_3[1].append(get_SVM(X_feature_3[3], Y_groups_2_2[1]))
+X_groups_3_4, Y_groups_3_4, svmModel_3_4 = cluster_and_get_SVM(
+    X_groups_2_2[1], Y_groups_2_2[1], X_feature_3[3]
+)
 
+svmModels_3[0].append(svmModel_3_1)
+svmModels_3[0].append(svmModel_3_2)
+svmModels_3[1].append(svmModel_3_3)
+svmModels_3[1].append(svmModel_3_4)
+
+for x in X_groups_3_1[0]:
+    X_feature_4[0].append(get_HOG(x))
+for x in X_groups_3_1[1]:
+    X_feature_4[1].append(get_HOG(x))
+for x in X_groups_3_2[0]:
+    X_feature_4[2].append(get_HOG(x))
+for x in X_groups_3_2[1]:
+    X_feature_4[3].append(get_HOG(x))
+for x in X_groups_3_3[0]:
+    X_feature_4[4].append(get_HOG(x))
+for x in X_groups_3_3[1]:
+    X_feature_4[5].append(get_HOG(x))
+for x in X_groups_3_4[0]:
+    X_feature_4[6].append(get_HOG(x))
+for x in X_groups_3_4[1]:
+    X_feature_4[7].append(get_HOG(x))
+
+svmModels_4 = [[[], []], [[], []]]
+
+
+print("4-1")
+svmModels_4[0][0].append(get_SVM(X_feature_4[0], Y_groups_3_1[0]))
+print("4-2")
+svmModels_4[0][0].append(get_SVM(X_feature_4[1], Y_groups_3_1[1]))
+print("4-3")
+svmModels_4[0][1].append(get_SVM(X_feature_4[2], Y_groups_3_2[0]))
+print("4-4")
+svmModels_4[0][1].append(get_SVM(X_feature_4[3], Y_groups_3_2[1]))
+print("4-5")
+svmModels_4[1][0].append(get_SVM(X_feature_4[4], Y_groups_3_3[0]))
+print("4-6")
+svmModels_4[1][0].append(get_SVM(X_feature_4[5], Y_groups_3_3[1]))
+print("4-7")
+svmModels_4[1][1].append(get_SVM(X_feature_4[6], Y_groups_3_4[0]))
+print("4-8")
+svmModels_4[1][1].append(get_SVM(X_feature_4[7], Y_groups_3_4[1]))
 
 Y_predict_final = []
 
@@ -117,9 +162,12 @@ for x_test in X_test_final:
     y_predict_2 = svm_2.predict([x_proj_vert])[0]
 
     svm_3 = svmModels_3[y_predict_1][y_predict_2]
-    y_predict_3 = svm_3.predict([np.concatenate((x_sift, x_hog), axis=0)])
+    y_predict_3 = svm_3.predict([x_sift])[0]
 
-    Y_predict_final.append(y_predict_3)
+    svm_4 = svmModels_4[y_predict_1][y_predict_2][y_predict_3]
+    y_predict_4 = svm_4.predict([x_hog])[0]
+
+    Y_predict_final.append(y_predict_4)
 
 accuracy = accuracy_score(Y_test_final, Y_predict_final)
 print("accuracy of: " + str(accuracy))

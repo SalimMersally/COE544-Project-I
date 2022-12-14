@@ -173,14 +173,16 @@ def get_Clustered_No_Feature():
     if X == None or Y == None:
         X = []
         Y = []
-        path = os.path.join(os.getcwd(), "dataSet", "cluster.csv")
+        # path = os.path.join(os.getcwd(), "dataSet", "cluster.csv")
+        path = os.path.join(os.getcwd(), "dataSet", "english.csv")
         file = open(path)
         fileCSV = csv.reader(file)
         for row in fileCSV:
             if row[1] == "label":
                 continue
             print(row[0])
-            imagePath = os.path.join(os.getcwd(), "dataSet/ImgClustered", row[0])
+            # imagePath = os.path.join(os.getcwd(), "dataSet/ImgClustered", row[0])
+            imagePath = os.path.join(os.getcwd(), "dataSet", row[0].replace("/", "\\"))
             img = cv2.imread(imagePath)
             characters, processedImg = find_bounding_box(img)
             processedImg = processedImg[0]  # trained images have only one letter

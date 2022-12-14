@@ -194,26 +194,28 @@ class Window(QMainWindow):
     def predict(self):
         self.image.save("./image.png")
         img = cv2.imread("./image.png")
-        svm = getSVM(None, None)
+        print("getting svm")
 
         try:
             dummy, letters = find_bounding_box(img)
             word = ""
             for letter in letters:
-                # hog = get_HOG(letter)
-                # sift = get_dense_SIFT(letter)
-                X = np.array([letter]).astype("float32")
-                X = np.expand_dims(X, axis=-1)
-                result = cnn.predict(X)
-                for pred in result:
-                    for i in range(len(pred)):
-                        if pred[i] == pred.max():
-                            pred[i] = 1
-                        else:
-                            pred[i] = 0
-                
-                decoded = decodeResult(result[0])
-                word += decoded[0]
+                hog = get_HOG(letter)
+                sift = get_dense_SIFT(letter)
+                result = svm.predict([np.concatenate((sift, hog), axis=0)])
+                word += result[0]
+                # X = np.array([letter]).astype("float32")
+                # X = np.expand_dims(X, axis=-1)
+                # result = cnn.predict(X)
+                # for pred in result:
+                #     for i in range(len(pred)):
+                #         if pred[i] == pred.max():
+                #             pred[i] = 1
+                #         else:
+                #             pred[i] = 0
+
+                # decoded = decodeResult(result[0])
+                # word += decoded[0]
 
             corrected = correct_word(word)
 
