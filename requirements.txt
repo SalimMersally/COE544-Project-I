@@ -5,3 +5,5 @@ matplotlib
 scikit-image
 PyQt5
 pyspellchecker
+keras
+tensorflow

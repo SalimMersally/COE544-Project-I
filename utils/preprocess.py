@@ -59,18 +59,18 @@ def find_bounding_box(img):
         # make 32x32 pixels
         # output = cv2.resize(thresholded, (32,32))
         if W > H:
-            thresholded = imutils.resize(thresholded, width=32)
+            thresholded = imutils.resize(thresholded, width=28)
         # otherwise, resize along the height
         else:
-            thresholded = imutils.resize(thresholded, height=32)
+            thresholded = imutils.resize(thresholded, height=28)
 
         # pad instead of extending
         (H, W) = thresholded.shape
         X_padding = int(
-            max(0, 32 - W) / 2.0
+            max(0, 28 - W) / 2.0
         )  # if W =32 we won't need to pad on the X-axis
         Y_padding = int(
-            max(0, 32 - H) / 2.0
+            max(0, 28 - H) / 2.0
         )  # if H = 32 we won't need to padd on the y-axis
 
         # pad the image and force 32x32 dimensions
@@ -84,7 +84,7 @@ def find_bounding_box(img):
             value=(0, 0, 0),
         )
 
-        padded = cv2.resize(padded, (32, 32))
+        padded = cv2.resize(padded, (28, 28))
         paddedArray.append(padded)
         # add character image and dimension from original image into the characters array
         characters.append((padded, (x, y, w, h)))

@@ -5,6 +5,8 @@ from sklearn.model_selection import train_test_split
 from joblib import dump, load
 from sklearn.ensemble import BaggingClassifier
 from sklearn.ensemble import RandomForestClassifier
+from keras.models import load_model
+import keras
 
 
 def splitDataSet(X, Y):
@@ -62,3 +64,81 @@ def retrieveObject(fileName):
         print("There is no file with the following name: " + fileName)
 
     return object
+
+
+def getCNN():
+    cnn = load_model("./cnn")
+    return cnn
+
+
+def decodeResult(results):
+
+    character = [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+    ]
+    decoded = 0
+    for i in range(len(results)):
+        if results[i] == 1:
+            decoded = character[i]
+    return decoded

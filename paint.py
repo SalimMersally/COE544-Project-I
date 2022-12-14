@@ -39,7 +39,7 @@ class Window(QMainWindow):
         self.prediction.setText("Prediction: ")
         self.prediction.move(300, 530)
         self.prediction.resize(200, 20)
-        
+
         self.likely = QLabel(self)
         self.likely.setText("Other: ")
         self.likely.move(300, 550)
@@ -192,43 +192,44 @@ class Window(QMainWindow):
         self.update()
 
     def predict(self):
-      self.image.save("./image.png")
-      img4 = cv2.imread("./image.png")
-      #draw_bounding_boxes(img4)
-      svmModel = getSVM(None, None)
-      
-      try:
-        dummy, letters = find_bounding_box(img4) 
-        word = ""
-        for letter in letters: 
-            hog = get_HOG(letter)
-            sift = get_dense_SIFT(letter)
-            result = svmModel.predict([np.concatenate((sift, hog), axis=0)])
-            word += result[0]
-        
-        corrected = correct_word(word)
-        
-        if(corrected==None):
+        self.image.save("./image.png")
+        img = cv2.imread("./image.png")
+        cnn = getCNN()
+
+        try:
+            dummy, letters = find_bounding_box(img)
+            word = ""
+            for letter in letters:
+                # hog = get_HOG(letter)
+                # sift = get_dense_SIFT(letter)
+                X = np.array([letter]).astype("float32")
+                X = np.expand_dims(X, axis=-1)
+                result = cnn.predict(X)
+                decoded = decodeResult(result[0])
+                word += decoded[0]
+
+            corrected = correct_word(word)
+
+            if corrected == None:
                 print(word)
                 self.prediction.setText("Prediction: " + word)
                 self.likely.setText("Other: ")
                 os.remove("./image.png")
                 self.clear()
-        else: 
+            else:
                 print(word)
                 word = corrected[0]
                 self.prediction.setText("Prediction: " + word)
                 print(corrected[1])
-                self.likely.setText("Other: "+corrected[1])
+                self.likely.setText("Other: " + corrected[1])
                 os.remove("./image.png")
                 self.clear()
-      except: 
+        except:
             # print("error!")
             self.prediction.setText("Prediction: " + word)
             os.remove("./image.png")
             self.likely.setText("Other: ")
-            self.clear()    
-        
+            self.clear()
 
     # methods for changing brush color
     def blackColor(self):
