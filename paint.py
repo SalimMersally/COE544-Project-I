@@ -195,44 +195,41 @@ class Window(QMainWindow):
         self.image.save("./image.png")
         img = cv2.imread("./image.png")
 
-        cnn = getANN()
+        svmModel = getSVM(None, None, "svm_split")
+        mlp = getMLP(None, None, "clf-character")
+        cnn = getCNN()
+
         print("starting")
         try:
             dummy, letters = find_bounding_box(img)
             word = ""
-            for letter in letters:
-                print(np.shape(letter))
-                X_hog = get_HOG(letter)
-                print("done")
-                X_sift = get_dense_SIFT(letter)
-                print("done")
-                X_projH = get_proj_histogram_horz(letter)
-                print("done")
-                X_projV = get_proj_histogram_vert(letter)
-                print("features done")
-                X_hog = np.array(X_hog).astype("float32")
-                X_sift = np.array(X_sift).astype("float32")
-                X_projH = np.array(X_projH).astype("float32")
-                X_projV = np.array(X_projH).astype("float32")
-
-                X_hog = np.expand_dims(X_hog, 0)
-                X_sift = np.expand_dims(X_sift, 0)
-                X_projH = np.expand_dims(X_projH, 0)
-                X_projV = np.expand_dims(X_projV, 0)
-
-                print(X_hog.shape, X_sift.shape, X_projH.shape, X_projV.shape)
-                print("predicting")
-                result = cnn.predict([X_hog, X_sift, X_projV, X_projH])
-                print("prediction done")
-                for pred in result:
-                    for i in range(len(pred)):
-                        if pred[i] == pred.max():
-                            pred[i] = 1
-                        else:
-                            pred[i] = 0
-
-                decoded = decodeResult(result[0])
-                word += decoded[0]
+            for x in letters:
+                feature = np.concatenate(
+                    (
+                        get_dense_SIFT(x),
+                        get_HOG(x),
+                        get_proj_histogram_horz(x),
+                        get_proj_histogram_vert(x),
+                    ),
+                    axis=0,
+                )
+                predict_1 = svmModel.predict([feature])[0]
+                result = 0
+                if predict_1 == 0:
+                    x_np = np.array([x]).astype("float32")
+                    x_np = np.expand_dims(x_np, -1)
+                    result = cnn.predict(x_np)
+                    for pred in result:
+                        for i in range(len(pred)):
+                            if pred[i] == pred.max():
+                                pred[i] = 1
+                            else:
+                                pred[i] = 0
+                    decoded = decodeResult(result[0])
+                    result = decoded[0]
+                else:
+                    result = mlp.predict([feature])[0]
+                word += result
 
             corrected = correct_word(word)
 

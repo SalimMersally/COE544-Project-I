@@ -111,7 +111,7 @@ for i in range(len(X_feature)):
 
 (X_train_2, X_test_2, Y_train_2, Y_test_2) = splitDataSet(X_no_digit, Y_no_digit)
 
-mlp = getMLP(X_no_digit, Y_no_digit, "clf-character")
+mlp = getMLP(X_train_2, Y_train_2, "clf-character")
 Y_predict_2 = mlp.predict(X_test_2)
 accuracy_2 = accuracy_score(Y_test_2, Y_predict_2)
 print("validation metrics: ")
