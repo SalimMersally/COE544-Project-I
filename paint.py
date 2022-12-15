@@ -194,8 +194,8 @@ class Window(QMainWindow):
     def predict(self):
         self.image.save("./image.png")
         img = cv2.imread("./image.png")
-        
-        cnn = getCNN()
+
+        cnn = getANN()
         print("starting")
         try:
             dummy, letters = find_bounding_box(img)
@@ -208,18 +208,18 @@ class Window(QMainWindow):
                 print("done")
                 X_projH = get_proj_histogram_horz(letter)
                 print("done")
-                X_projV= get_proj_histogram_vert(letter)
+                X_projV = get_proj_histogram_vert(letter)
                 print("features done")
-                X_hog= np.array(X_hog).astype('float32')
-                X_sift= np.array(X_sift).astype('float32')
-                X_projH= np.array(X_projH).astype('float32')
-                X_projV= np.array(X_projH).astype('float32')
-                
-                X_hog= np.expand_dims(X_hog, 0)
-                X_sift= np.expand_dims(X_sift, 0)
-                X_projH= np.expand_dims(X_projH, 0)
-                X_projV= np.expand_dims(X_projV, 0)
-                
+                X_hog = np.array(X_hog).astype("float32")
+                X_sift = np.array(X_sift).astype("float32")
+                X_projH = np.array(X_projH).astype("float32")
+                X_projV = np.array(X_projH).astype("float32")
+
+                X_hog = np.expand_dims(X_hog, 0)
+                X_sift = np.expand_dims(X_sift, 0)
+                X_projH = np.expand_dims(X_projH, 0)
+                X_projV = np.expand_dims(X_projV, 0)
+
                 print(X_hog.shape, X_sift.shape, X_projH.shape, X_projV.shape)
                 print("predicting")
                 result = cnn.predict([X_hog, X_sift, X_projV, X_projH])
@@ -230,7 +230,7 @@ class Window(QMainWindow):
                             pred[i] = 1
                         else:
                             pred[i] = 0
-                
+
                 decoded = decodeResult(result[0])
                 word += decoded[0]
 

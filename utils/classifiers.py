@@ -6,7 +6,7 @@ from joblib import dump, load
 from sklearn.ensemble import BaggingClassifier
 from sklearn.ensemble import RandomForestClassifier
 from keras.models import load_model
-import keras
+from sklearn.neural_network import MLPClassifier
 
 
 def splitDataSet(X, Y):
@@ -67,6 +67,11 @@ def retrieveObject(fileName):
 
 
 def getCNN():
+    cnn = load_model("./cnn/Digits")
+    return cnn
+
+
+def getANN():
     cnn = load_model("./cnn/ANN-Trial")
     return cnn
 
@@ -152,3 +157,19 @@ def getIndex(array):
             index = i
             break
     return index
+
+
+def getMLP(X, Y, name):
+    clf = retrieveObject("./objects/" + name + ".joblib")
+
+    if clf == None:
+        clf = MLPClassifier(
+            solver="lbfgs",
+            alpha=1e-5,
+            hidden_layer_sizes=(200,),
+            random_state=1,
+        )
+        clf.fit(X, Y)
+        saveObject(clf, "./objects/" + name + ".joblib")
+
+    return clf
