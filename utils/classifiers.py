@@ -67,7 +67,7 @@ def retrieveObject(fileName):
 
 
 def getCNN():
-    cnn = load_model("./cnn")
+    cnn = load_model("./cnn/ANN-Trial")
     return cnn
 
 

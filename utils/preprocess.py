@@ -125,6 +125,7 @@ def process_images():
 
         sift = get_dense_SIFT(processedImg)
         hog = get_HOG(processedImg)
+        
 
         X.append(np.concatenate((sift, hog), axis=0))
         Y.append(row[1])

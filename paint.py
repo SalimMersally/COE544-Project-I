@@ -194,29 +194,45 @@ class Window(QMainWindow):
     def predict(self):
         self.image.save("./image.png")
         img = cv2.imread("./image.png")
-        print("getting svm")
-        svm = getSVM(None, None, "svm")
-
+        
+        cnn = getCNN()
+        print("starting")
         try:
             dummy, letters = find_bounding_box(img)
             word = ""
             for letter in letters:
-                hog = get_HOG(letter)
-                sift = get_dense_SIFT(letter)
-                result = svm.predict([np.concatenate((sift, hog), axis=0)])
-                word += result[0]
-                # X = np.array([letter]).astype("float32")
-                # X = np.expand_dims(X, axis=-1)
-                # result = cnn.predict(X)
-                # for pred in result:
-                #     for i in range(len(pred)):
-                #         if pred[i] == pred.max():
-                #             pred[i] = 1
-                #         else:
-                #             pred[i] = 0
-
-                # decoded = decodeResult(result[0])
-                # word += decoded[0]
+                print(np.shape(letter))
+                X_hog = get_HOG(letter)
+                print("done")
+                X_sift = get_dense_SIFT(letter)
+                print("done")
+                X_projH = get_proj_histogram_horz(letter)
+                print("done")
+                X_projV= get_proj_histogram_vert(letter)
+                print("features done")
+                X_hog= np.array(X_hog).astype('float32')
+                X_sift= np.array(X_sift).astype('float32')
+                X_projH= np.array(X_projH).astype('float32')
+                X_projV= np.array(X_projH).astype('float32')
+                
+                X_hog= np.expand_dims(X_hog, 0)
+                X_sift= np.expand_dims(X_sift, 0)
+                X_projH= np.expand_dims(X_projH, 0)
+                X_projV= np.expand_dims(X_projV, 0)
+                
+                print(X_hog.shape, X_sift.shape, X_projH.shape, X_projV.shape)
+                print("predicting")
+                result = cnn.predict([X_hog, X_sift, X_projV, X_projH])
+                print("prediction done")
+                for pred in result:
+                    for i in range(len(pred)):
+                        if pred[i] == pred.max():
+                            pred[i] = 1
+                        else:
+                            pred[i] = 0
+                
+                decoded = decodeResult(result[0])
+                word += decoded[0]
 
             corrected = correct_word(word)
 
@@ -234,8 +250,8 @@ class Window(QMainWindow):
                 self.likely.setText("Other: " + corrected[1])
                 os.remove("./image.png")
                 self.clear()
-        except:
-            # print("error!")
+        except Exception as e:
+            print(e)
             self.prediction.setText("Prediction: " + word)
             os.remove("./image.png")
             self.likely.setText("Other: ")
